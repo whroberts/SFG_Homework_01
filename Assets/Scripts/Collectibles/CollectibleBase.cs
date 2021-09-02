@@ -44,7 +44,11 @@ public abstract class CollectibleBase : MonoBehaviour
             //spawn particles & sfx because we need to disable object
             Feedback();
 
-            gameObject.SetActive(false);
+            Collider col = gameObject.GetComponent<Collider>();
+            MeshRenderer mesh = gameObject.GetComponent<MeshRenderer>();
+            col.enabled = false;
+            mesh.enabled = false;
+            Destroy(gameObject, 5f);
         }
     }
 
@@ -54,6 +58,7 @@ public abstract class CollectibleBase : MonoBehaviour
         if (_collectParticles != null)
         {
             _collectParticles = Instantiate(_collectParticles, transform.position, Quaternion.identity);
+            Destroy(_collectParticles.gameObject, _collectParticles.main.duration);
         }
 
         //audio. TODO - consider Object Pooling for performance

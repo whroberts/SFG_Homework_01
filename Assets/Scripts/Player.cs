@@ -7,7 +7,8 @@ public class Player : MonoBehaviour
     [SerializeField] int _maxHealth = 3;
     [SerializeField] int _currentTreasureCount = 0;
 
-    int _currentHealth;
+    public int _currentHealth;
+    public bool _invincible;
 
     public int CurrentTreasureCount
     {
@@ -25,7 +26,8 @@ public class Player : MonoBehaviour
     }
     void Start()
     {
-        _currentHealth = _maxHealth;        
+        _currentHealth = _maxHealth;
+        _ui.SetHealth();
     }
 
     void Update()
@@ -35,26 +37,34 @@ public class Player : MonoBehaviour
 
     public void IncreaseHealth(int amount)
     {
+        _currentHealth += amount;
         _currentHealth = Mathf.Clamp(_currentHealth, 0, _maxHealth);
         Debug.Log("Player's health: " + _currentHealth);
+        _ui.SetHealth();
     }
 
     public void DecreaseHealth(int amount)
     {
-        _currentHealth -= amount;
-        Debug.Log("Player's health: " + _currentHealth);
-
-        if (_currentHealth <= 0)
+        if (!_invincible)
         {
-            Kill();
+            _currentHealth -= amount;
+            Debug.Log("Player's health: " + _currentHealth);
+            _ui.SetHealth();
+            if (_currentHealth <= 0)
+            {
+                Kill();
+            }
         }
     }
 
     public void Kill()
     {
-        gameObject.SetActive(false);
-        //particles
-        //sound
+        if (!_invincible)
+        {
+            gameObject.SetActive(false);
+            //particles
+            //sound
+        }
     }
 
     public void CollectTreasure(int value)
